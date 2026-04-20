@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ponte G75</title>
+    <style>
+        body { background: #111; color: #0f0; text-align: center; font-family: sans-serif; padding: 20px; }
+        .box { border: 2px solid #0f0; padding: 20px; border-radius: 15px; display: inline-block; background: #000; }
+        .btn { padding: 15px; background: #0f0; border: none; font-weight: bold; margin: 10px; cursor: pointer; border-radius: 5px; width: 100%; }
+        input { margin: 10px; padding: 10px; width: 90%; background: #222; color: #0f0; border: 1px solid #0f0; }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h1>PONTE G75 NUVEM</h1>
+        <p>Status: <span id="status">Aguardando Link...</span></p>
+        <input type="text" id="linkCelular" placeholder="Cole o link do Termux aqui">
+        <hr>
+        <input type="file" id="arquivo">
+        <button class="btn" onclick="enviar()">⬆️ GUARDAR NO CELULAR</button>
+        <button class="btn" onclick="puxar()">⬇️ RECUPERAR DO CELULAR</button>
+    </div>
+    <script>
+        function enviar() {
+            const link = document.getElementById('linkCelular').value;
+            const file = document.getElementById('arquivo').files[0];
+            if(!link || !file) return alert("Falta o link ou o arquivo!");
+            const fd = new FormData();
+            fd.append('file', file);
+            document.getElementById('status').innerText = "Enviando...";
+            fetch(link + '/upload', { method: 'POST', body: fd })
+            .then(() => {
+                alert('Guardado com sucesso!');
+                document.getElementById('status').innerText = "Conectado";
+            })
+            .catch(() => alert('Erro na conexão! Verifique o Ngrok no Termux.'));
+        }
+        function puxar() {
+            const link = document.getElementById('linkCelular').value;
+            if(!link) return alert("Cole o link do Termux!");
+            window.open(link + '/arquivos');
+        }
+    </script>
+</body>
+</html>
